@@ -214,12 +214,12 @@ module VDP2 (
 	wire [8:0] HBL_END = !HRES[1] ? 9'd3 : 9'd2;
 	wire [8:0] HDISP_END = !HRES[0] ? 9'd320 - 9'd1 : 9'd352 - 9'd1;
 	wire [8:0] VBL_START = VBL_START_224 + {VRES,4'h0};
-	wire [8:0] VS_START  = (!VRES[1] ? (!VRES[0] ? VS_START_224 : VS_START_240) : VS_START_256) + (REGS.TVMD.LSMD[1] && ODD ? 9'd1 : 9'd0);
+	wire [8:0] VS_START  = !VRES[1] ? (!VRES[0] ? VS_START_224 : VS_START_240) : VS_START_256;
 	wire [8:0] VS_END    = !VRES[1] ? (!VRES[0] ? VS_END_224 : VS_END_240) : VS_END_256;
-	wire [8:0] VSYNC_HSTART = REGS.TVMD.LSMD[1] && ODD ? 9'd176 : 9'd352;
+	wire [8:0] VSYNC_HSTART = (REGS.TVMD.LSMD[1] && ODD) ? (!HRES[0] ? 9'd139 : 9'd125) : 9'd352;
 	wire [8:0] VBORD_START  = !VRES[1] ? (!VRES[0] ? 9'd263-9'd12 : 9'd263-9'd4) : 9'd313-9'd0;
 	wire [8:0] VBORD_END  = !VRES[1] ? (!VRES[0] ? 9'd224+9'd12 : 9'd240+9'd4) : 9'd256+9'd0;
-	wire [8:0] BREAK_LINE  = !PAL ? (VRES_NTSC - 9'd3) : (VRES_PAL - 9'd3);
+	wire [8:0] BREAK_LINE  = (!PAL ? (VRES_NTSC - 9'd3) : (VRES_PAL - 9'd3)) - ((REGS.TVMD.LSMD[1] && ODD) ? 9'd1 : 9'd0);
 	wire [8:0] NEXT_TO_LAST_LINE  = 9'h1FE;
 	wire [8:0] LAST_LINE  = 9'h1FF;
 	wire IS_LAST_LINE = (V_CNT == LAST_LINE);
